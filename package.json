@@ -1,0 +1,24 @@
+{
+  "name": "pedidos-whatsapp",
+  "version": "1.0.0",
+  "description": "Bot de pedidos no WhatsApp com banco SQLite e impressao automatica (fundo branco, economia de tinta)",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test-print": "node src/testPrint.js",
+    "test-bot": "node src/testBot.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
+    "better-sqlite3": "^11.5.0",
+    "dotenv": "^16.4.5",
+    "pdf-to-printer": "^5.6.0",
+    "pdfkit": "^0.15.0",
+    "pino": "^9.5.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "loja": {
+    "nome": "Lanchonete Exemplo",
+    "boasVindas": "Olá! 👋 Bem-vindo(a) à *Lanchonete Exemplo*."
+  },
+  "taxaEntrega": 5.0,
+  "itens": [
+    { "codigo": 1, "nome": "X-Burger", "preco": 18.5 },
+    { "codigo": 2, "nome": "X-Bacon", "preco": 22.0 },
+    { "codigo": 3, "nome": "X-Salada", "preco": 20.0 },
+    { "codigo": 4, "nome": "Batata Frita", "preco": 12.0 },
+    { "codigo": 5, "nome": "Refrigerante Lata", "preco": 6.0 },
+    { "codigo": 6, "nome": "Suco Natural 500ml", "preco": 9.0 }
+  ]
+}
