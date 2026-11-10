@@ -25,7 +25,7 @@ Criados automaticamente ao rodar: `auth/` (sessão do WhatsApp), `data/pedidos.d
 
 ## Instalação
 
-1. Instale o Node.js 18+ (recomendado a versão LTS): https://nodejs.org
+1. Instale o Node.js 20+ (recomendado a versão LTS): https://nodejs.org
 2. Na pasta do projeto:
    ```
    npm install

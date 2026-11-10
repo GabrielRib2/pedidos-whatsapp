@@ -1,15 +1,17 @@
 {
   "loja": {
-    "nome": "Lanchonete Exemplo",
-    "boasVindas": "Olá! 👋 Bem-vindo(a) à *Lanchonete Exemplo*."
+    "nome": "Restaurante Santos Dumont",
+    "boasVindas": "Olá! 👋 Bem-vindo(a) à *Santos Dumont*."
   },
   "taxaEntrega": 5.0,
   "itens": [
-    { "codigo": 1, "nome": "X-Burger", "preco": 18.5 },
-    { "codigo": 2, "nome": "X-Bacon", "preco": 22.0 },
-    { "codigo": 3, "nome": "X-Salada", "preco": 20.0 },
-    { "codigo": 4, "nome": "Batata Frita", "preco": 12.0 },
-    { "codigo": 5, "nome": "Refrigerante Lata", "preco": 6.0 },
-    { "codigo": 6, "nome": "Suco Natural 500ml", "preco": 9.0 }
+    { "codigo": 1, "nome": "Quentinha M", "preco": 24 },
+    { "codigo": 2, "nome": "Quentinha G", "preco": 27 },
+    { "codigo": 3, "nome": "Porção Lasanha de frango", "preco": 13 },
+    { "codigo": 4, "nome": "Porção Panqueca de Carne", "preco": 8 },
+    { "codigo": 5, "nome": "Refrigerante Lata", "preco": 5 },
+    { "codigo": 5, "nome": "Refrigerante 1L", "preco": 8 },
+    { "codigo": 6, "nome": "Suco Natural 500ml", "preco": 7 },
+    { "codigo": 6, "nome": "Suco Natural 1L", "preco": 12 }
   ]
 }
