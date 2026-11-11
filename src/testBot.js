@@ -18,7 +18,7 @@ const chat = '5579999999999@s.whatsapp.net';
 const falas = [
   'oi',
   '2x1, 4',
-  '1 x-bacon e 5',
+  '1x5, 1x7, 1x6, 1x8',
   'pronto',
   'sem cebola, troco para 100',
   'Maria Silva',
@@ -39,8 +39,19 @@ const salvo = salvarPedido({ ...confirmado, telefone: '5579999999999' });
 console.log(`\n🤖 ${mensagemConfirmacao(salvo)}`);
 
 const lido = buscarPedido(salvo.id);
-assert.equal(lido.itens.length, 4);
-assert.equal(lido.total, 82); // 2x18,50 + 12 + 22 + 6 + 5 de entrega
+assert.equal(lido.itens.length, 6);
+assert.equal(lido.total, 93); // Quentinha M, panqueca, refrigerantes, sucos e entrega
+assert.deepEqual(
+  lido.itens.map(({ codigo, nome }) => [codigo, nome]),
+  [
+    [1, 'Quentinha M'],
+    [4, 'Porção Panqueca de Carne'],
+    [5, 'Refrigerante Lata'],
+    [7, 'Refrigerante 1L'],
+    [6, 'Suco Natural 500ml'],
+    [8, 'Suco Natural 1L'],
+  ],
+);
 assert.equal(lido.nome, 'Maria Silva');
 
 const pdf = await gerarEImprimir(salvo);

@@ -10,8 +10,8 @@
     { "codigo": 3, "nome": "Porção Lasanha de frango", "preco": 13 },
     { "codigo": 4, "nome": "Porção Panqueca de Carne", "preco": 8 },
     { "codigo": 5, "nome": "Refrigerante Lata", "preco": 5 },
-    { "codigo": 5, "nome": "Refrigerante 1L", "preco": 8 },
+    { "codigo": 7, "nome": "Refrigerante 1L", "preco": 8 },
     { "codigo": 6, "nome": "Suco Natural 500ml", "preco": 7 },
-    { "codigo": 6, "nome": "Suco Natural 1L", "preco": 12 }
+    { "codigo": 8, "nome": "Suco Natural 1L", "preco": 12 }
   ]
 }
