@@ -15,6 +15,10 @@ const { salvarPedido, buscarPedido } = await import('./db.js');
 const { gerarEImprimir } = await import('./printer.js');
 
 const chat = '5579999999999@s.whatsapp.net';
+const desconhecido = processarMensagem('desconhecido@s.whatsapp.net', 'oi', 'Maria');
+assert.equal(desconhecido.enviarCardapio, true);
+assert.deepEqual(processarMensagem('desconhecido@s.whatsapp.net', 'qualquer coisa').respostas, []);
+
 const falas = [
   'oi',
   '2x1, 4',
@@ -30,8 +34,21 @@ let confirmado;
 for (const fala of falas) {
   console.log(`\n👤 ${fala}`);
   const r = processarMensagem(chat, fala, 'Maria');
+  if (fala === 'oi') {
+    assert.equal(r.enviarCardapio, true);
+    assert.equal(r.respostas.length, 1);
+  } else {
+    assert.equal(Boolean(r.enviarCardapio), false);
+  }
   for (const msg of r.respostas) console.log(`🤖 ${msg}`);
   if (r.pedidoConfirmado) confirmado = r.pedidoConfirmado;
+  if (fala === 'oi') assert.deepEqual(processarMensagem(chat, 'texto aleatório').respostas, []);
+  if (fala === '2x1, 4') assert.deepEqual(processarMensagem(chat, 'texto aleatório').respostas, []);
+  if (fala === 'sem cebola, troco para 100') assert.deepEqual(processarMensagem(chat, 'x').respostas, []);
+  if (fala === 'Maria Silva') assert.deepEqual(processarMensagem(chat, 'x').respostas, []);
+  if (fala === 'Rua das Flores, 123, Centro, apto 4 (perto da padaria)') {
+    assert.deepEqual(processarMensagem(chat, 'talvez').respostas, []);
+  }
 }
 
 assert.ok(confirmado, 'o pedido deveria ter sido confirmado');

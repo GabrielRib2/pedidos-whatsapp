@@ -10,6 +10,7 @@ pedidos-whatsapp/
 ├── package.json
 ├── .env.example        # copie para .env e ajuste (impressora, papel, cópias...)
 ├── config/menu.json    # nome da loja, cardápio, preços e taxa de entrega
+├── assets/cardapio.png # imagem enviada ao cliente no primeiro contato
 └── src/
     ├── index.js        # ponto de entrada: WhatsApp -> bot -> banco -> impressão
     ├── whatsapp.js     # conexão Baileys, QR Code, reconexão, fila por cliente
@@ -57,10 +58,12 @@ Deixe o computador ligado, com a impressora ligada e definida como padrão
 
 ## Como o cliente pede
 
-O cliente manda qualquer mensagem e recebe o cardápio. Ele responde, por exemplo, `2x1, 4`
+No primeiro contato, o cliente recebe a imagem do cardápio com a legenda
+"Olá, aqui está o cardápio", seguida das instruções para pedir. Ele responde, por exemplo, `2x1, 4`
 (2 unidades do item 1 e 1 do item 4), envia `pronto`, informa observações, nome e endereço
 (ou `retirada`) e confirma com `sim`. O pedido é salvo, o cliente recebe o número do pedido
 e a comanda sai na impressora.
+Entradas que não forem reconhecidas são ignoradas sem resposta automática de erro.
 
 ## Observações
 

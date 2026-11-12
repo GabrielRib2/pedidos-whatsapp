@@ -8,8 +8,9 @@ import { gerarEImprimir } from './printer.js';
 console.log(`Loja: ${config.menu.loja.nome} | Papel: ${config.papel} | ` +
   `Impressora: ${config.impressora || '(padrão do sistema)'} | Imprimir: ${config.imprimir}`);
 
-await iniciarWhatsApp(async ({ jid, texto, nome, enviar }) => {
+await iniciarWhatsApp(async ({ jid, texto, nome, enviar, enviarImagem }) => {
   const resultado = processarMensagem(jid, texto, nome);
+  if (resultado.enviarCardapio) await enviarImagem('Olá, aqui está o cardápio');
   for (const resposta of resultado.respostas) await enviar(resposta);
 
   if (resultado.pedidoConfirmado) {

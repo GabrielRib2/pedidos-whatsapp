@@ -18,6 +18,7 @@ const menu = JSON.parse(fs.readFileSync(path.join(root, 'config', 'menu.json'), 
 export const config = {
   root,
   menu,
+  menuImage: path.join(root, 'assets', 'cardapio.png'),
   papel,
   impressora: (process.env.IMPRESSORA || '').trim(), // vazio = impressora padrão do sistema
   copias: Math.max(1, parseInt(process.env.COPIAS || '1', 10) || 1),

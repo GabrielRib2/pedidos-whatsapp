@@ -4,6 +4,7 @@ import makeWASocket, {
   DisconnectReason,
   fetchLatestBaileysVersion,
 } from '@whiskeysockets/baileys';
+import fs from 'node:fs';
 import qrcode from 'qrcode-terminal';
 import pino from 'pino';
 import { config } from './config.js';
@@ -23,10 +24,11 @@ function textoDaMensagem(msg) {
 
 /**
  * Conecta ao WhatsApp. `aoReceber({ jid, texto, nome, enviar })` é chamado a cada mensagem
- * de cliente (conversa individual). `enviar(texto)` responde no mesmo chat.
+ * de cliente (conversa individual). `enviar(texto)` e `enviarImagem(legenda)` respondem no chat.
  */
 export async function iniciarWhatsApp(aoReceber) {
   const { state, saveCreds } = await useMultiFileAuthState(config.authDir);
+  const imagemCardapio = fs.readFileSync(config.menuImage);
 
   let version;
   try {
@@ -70,15 +72,14 @@ export async function iniciarWhatsApp(aoReceber) {
       if (jid.endsWith('@g.us') || jid === 'status@broadcast' || jid.endsWith('@newsletter')) continue; // ignora grupos/status
 
       const enviar = (texto) => sock.sendMessage(jid, { text: texto });
+      const enviarImagem = (legenda) =>
+        sock.sendMessage(jid, { image: imagemCardapio, caption: legenda });
       const texto = textoDaMensagem(msg).trim();
 
       const tarefa = async () => {
-        if (!texto) {
-          await enviar('Por enquanto só consigo entender mensagens de texto 🙂');
-          return;
-        }
+        if (!texto) return;
         await sock.sendPresenceUpdate('composing', jid);
-        await aoReceber({ jid, texto, nome: msg.pushName || '', enviar });
+        await aoReceber({ jid, texto, nome: msg.pushName || '', enviar, enviarImagem });
       };
 
       const anterior = filas.get(jid) || Promise.resolve();

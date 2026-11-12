@@ -69,7 +69,6 @@ function buscarItem(ref) {
 /** Aceita: "2x1, 4", "1", "x-bacon", "2 x bacon e 5" (formato: quantidade x código/nome). */
 function interpretarItens(texto) {
   const adicionados = [];
-  const erros = [];
   const partes = texto.split(/[,;\n]+|\s+e\s+/i).map((p) => p.trim()).filter(Boolean);
   for (const parte of partes) {
     let qtd = 1;
@@ -80,14 +79,12 @@ function interpretarItens(texto) {
       ref = m[2];
     }
     if (qtd < 1 || qtd > MAX_QTD) {
-      erros.push(`Quantidade inválida em "${parte}" (use de 1 a ${MAX_QTD}).`);
       continue;
     }
     const r = buscarItem(ref);
-    if (r.erro) erros.push(r.erro);
-    else adicionados.push({ item: r.item, qtd });
+    if (!r.erro) adicionados.push({ item: r.item, qtd });
   }
-  return { adicionados, erros };
+  return adicionados;
 }
 
 function calcular(carrinho, retirada) {
@@ -150,7 +147,7 @@ function novaSessao(nomePerfil) {
 
 /**
  * Processa uma mensagem do cliente.
- * @returns {{ respostas: string[], pedidoConfirmado?: object }}
+ * @returns {{ respostas: string[], enviarCardapio?: boolean, pedidoConfirmado?: object }}
  */
 export function processarMensagem(chave, texto, nomePerfil = '') {
   let s = sessoes.get(chave);
@@ -173,12 +170,11 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
     case ESTADO.INICIO: {
       s.estado = ESTADO.ITENS;
       return {
+        enviarCardapio: true,
         respostas: [
-          `${menu.loja.boasVindas}\n\n` +
-            'Para pedir, envie o *código* e a quantidade, por exemplo:\n' +
+          'Para pedir, envie o *código* e a quantidade, por exemplo:\n' +
             '`2x1, 4` = 2 unidades do item 1 e 1 do item 4.\n' +
             'Quando terminar, envie *pronto*. (*cancelar* a qualquer momento)',
-          formatarMenu(),
         ],
       };
     }
@@ -190,9 +186,7 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
         return { respostas: ['Carrinho limpo. Envie os itens que deseja. 🙂'] };
       }
       if (['pronto', 'fim', 'finalizar', 'so isso', 'so'].includes(cmd)) {
-        if (s.carrinho.size === 0) {
-          return { respostas: ['Seu carrinho está vazio. Envie o código dos itens, ex.: `2x1, 4`.'] };
-        }
+        if (s.carrinho.size === 0) return { respostas: [] };
         s.estado = ESTADO.OBS;
         return {
           respostas: [
@@ -201,18 +195,16 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
           ],
         };
       }
-      const { adicionados, erros } = interpretarItens(t);
+      const adicionados = interpretarItens(t);
+      if (adicionados.length === 0) return { respostas: [] };
       for (const { item, qtd } of adicionados) {
         s.carrinho.set(item.codigo, Math.min(MAX_QTD, (s.carrinho.get(item.codigo) || 0) + qtd));
       }
-      const resp = [];
-      if (erros.length) resp.push('⚠️ ' + erros.join('\n⚠️ '));
-      if (s.carrinho.size) {
-        resp.push(`${textoCarrinho(s.carrinho)}\n\nEnvie mais itens, *limpar* para zerar ou *pronto* para continuar.`);
-      } else if (!erros.length) {
-        resp.push('Não entendi. Envie o código dos itens (ex.: `2x1, 4`) ou *menu* para ver o cardápio.');
-      }
-      return { respostas: resp };
+      return {
+        respostas: [
+          `${textoCarrinho(s.carrinho)}\n\nEnvie mais itens, *limpar* para zerar ou *pronto* para continuar.`,
+        ],
+      };
     }
 
     case ESTADO.OBS: {
@@ -226,7 +218,7 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
     case ESTADO.NOME: {
       if (cmd === 'ok' && s.nomePerfil) s.nome = s.nomePerfil;
       else if (t.length >= 2) s.nome = t.slice(0, 60);
-      else return { respostas: ['Não entendi o nome. Pode repetir?'] };
+      else return { respostas: [] };
       s.estado = ESTADO.ENDERECO;
       return {
         respostas: [
@@ -244,7 +236,7 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
         s.retirada = false;
         s.endereco = t.slice(0, 200);
       } else {
-        return { respostas: ['Endereço muito curto. Envie rua, número e bairro (ou *retirada*).'] };
+        return { respostas: [] };
       }
       s.estado = ESTADO.CONFIRMAR;
       return { respostas: [textoResumo(s)] };
@@ -272,7 +264,7 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
           ],
         };
       }
-      return { respostas: ['Responda *SIM* para confirmar ou *NÃO* para ajustar.'] };
+      return { respostas: [] };
     }
   }
   return { respostas: [] };
