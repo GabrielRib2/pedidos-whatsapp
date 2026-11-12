@@ -60,8 +60,9 @@ Deixe o computador ligado, com a impressora ligada e definida como padrão
 
 No primeiro contato, o cliente recebe a imagem do cardápio com a legenda
 "Olá, aqui está o cardápio", seguida das instruções para pedir. Ele responde, por exemplo, `2x1, 4`
-(2 unidades do item 1 e 1 do item 4), envia `pronto`, informa observações, nome e endereço
-(ou `retirada`) e confirma com `sim`. O pedido é salvo, o cliente recebe o número do pedido
+(2 unidades do item 1 e 1 do item 4), envia `pronto`, informa observações e nome. Ao receber
+"Endereço?", a resposta do cliente é salva no campo "Entrega:" da comanda; para retirada, ele
+pode enviar `retirada` e confirmar com `sim`. O pedido é salvo, o cliente recebe o número do pedido
 e a comanda sai na impressora.
 Entradas que não forem reconhecidas são ignoradas sem resposta automática de erro.
 

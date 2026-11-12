@@ -12,7 +12,7 @@ process.env.IMPRIMIR = 'false';
 
 const { processarMensagem, mensagemConfirmacao } = await import('./bot.js');
 const { salvarPedido, buscarPedido } = await import('./db.js');
-const { gerarEImprimir } = await import('./printer.js');
+const { gerarEImprimir, montarLinhas } = await import('./printer.js');
 
 const chat = '5579999999999@s.whatsapp.net';
 const desconhecido = processarMensagem('desconhecido@s.whatsapp.net', 'oi', 'Maria');
@@ -45,7 +45,6 @@ for (const fala of falas) {
   if (fala === 'oi') assert.deepEqual(processarMensagem(chat, 'texto aleatório').respostas, []);
   if (fala === '2x1, 4') assert.deepEqual(processarMensagem(chat, 'texto aleatório').respostas, []);
   if (fala === 'sem cebola, troco para 100') assert.deepEqual(processarMensagem(chat, 'x').respostas, []);
-  if (fala === 'Maria Silva') assert.deepEqual(processarMensagem(chat, 'x').respostas, []);
   if (fala === 'Rua das Flores, 123, Centro, apto 4 (perto da padaria)') {
     assert.deepEqual(processarMensagem(chat, 'talvez').respostas, []);
   }
@@ -73,5 +72,22 @@ assert.equal(lido.nome, 'Maria Silva');
 
 const pdf = await gerarEImprimir(salvo);
 assert.ok(fs.existsSync(pdf) && fs.statSync(pdf).size > 500, 'PDF não foi gerado');
+const linhasComanda = montarLinhas(salvo, 60);
+const linhaEntrega = linhasComanda.findIndex((linha) => linha.startsWith('Entrega: '));
+assert.ok(linhaEntrega >= 0, 'a comanda deveria ter o campo Entrega');
+assert.ok(
+  linhasComanda.slice(linhaEntrega, linhaEntrega + 3).join(' ').replace(/\s+/g, ' ')
+    .includes('Rua das Flores, 123, Centro, apto 4 (perto da padaria)'),
+  'o endereço do cliente deveria aparecer no campo Entrega da comanda',
+);
+
+const chatEnderecoCurto = '5579888888888@s.whatsapp.net';
+processarMensagem(chatEnderecoCurto, 'oi');
+processarMensagem(chatEnderecoCurto, '1');
+processarMensagem(chatEnderecoCurto, 'pronto');
+processarMensagem(chatEnderecoCurto, 'não');
+processarMensagem(chatEnderecoCurto, 'Ana');
+const enderecoCurto = processarMensagem(chatEnderecoCurto, 'Rua 1');
+assert.match(enderecoCurto.respostas[0], /📍 Rua 1/);
 
 console.log(`\n✅ Teste OK. Banco: ${process.env.DB_PATH}\n   PDF: ${pdf}`);

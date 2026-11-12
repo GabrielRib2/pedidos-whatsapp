@@ -222,8 +222,7 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
       s.estado = ESTADO.ENDERECO;
       return {
         respostas: [
-          'Informe o *endereço completo de entrega* (rua, número, bairro e ponto de referência) ' +
-            'ou envie *retirada* para buscar no balcão.',
+          'Endereço? Envie *retirada* para buscar no balcão.',
         ],
       };
     }
@@ -232,7 +231,7 @@ export function processarMensagem(chave, texto, nomePerfil = '') {
       if (['retirada', 'retirar', 'balcao'].includes(cmd)) {
         s.retirada = true;
         s.endereco = 'RETIRADA NO BALCÃO';
-      } else if (t.length >= 8) {
+      } else if (t.length > 0) {
         s.retirada = false;
         s.endereco = t.slice(0, 200);
       } else {
